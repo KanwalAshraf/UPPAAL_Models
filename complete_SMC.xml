@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+int tp1_min=20;
+int tp1_max=40;
+int tp2_min=50;
+int tp2_max=100;
+int tp3_min=100;
+int tp3_max=300;
+int tc1_min=24;
+int tc1_max=50;
+int tc2_min=54;
+int tc2_max=110;
+int tc3_min=104;
+int tc3_max=310;
+int tx1_max=5;
+int tx1_min=2;
+int rx1_max=45;
+int rx1_min=22;
+int tx2_max=5;
+int tx2_min=2;
+int rx2_max=105;
+int rx2_min=52;
+int tx3_max=5;
+int tx3_min=2;
+int rx3_max=305;
+int rx3_min=302;
+int e=3;
+clock y,z;
+
+
+broadcast chan d1,d2,d3, Rx1, Rx2, Rx3, Start_1, End_1, Start_2, End_2, Start_3, End_3;</declaration>
+	<template>
+		<name x="9" y="9">Controller</name>
+		<declaration>// Place local declarations here.
+clock y;</declaration>
+		<location id="id0" x="570" y="-238">
+			<name x="561" y="-272">Initialization</name>
+			<label kind="exponentialrate" x="561" y="-221">e</label>
+		</location>
+		<location id="id1" x="374" y="-153">
+			<name x="391" y="-153">Droplet_Generation</name>
+			<label kind="exponentialrate" x="365" y="-187">e</label>
+		</location>
+		<location id="id2" x="434" y="-17">
+			<name x="442" y="-51">Init_U2</name>
+			<label kind="exponentialrate" x="425" y="0">e</label>
+		</location>
+		<location id="id3" x="570" y="-17">
+			<name x="536" y="-51">Imaging</name>
+			<label kind="exponentialrate" x="569" y="-8">e</label>
+		</location>
+		<location id="id4" x="723" y="-17">
+			<name x="740" y="-25">Init_U3</name>
+			<label kind="exponentialrate" x="714" y="0">e</label>
+		</location>
+		<location id="id5" x="740" y="-161">
+			<name x="697" y="-212">Detection</name>
+			<label kind="exponentialrate" x="680" y="-161">e</label>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id5"/>
+			<label kind="guard" x="825" y="-161">y&lt;tc3_max</label>
+			<nail x="816" y="-212"/>
+			<nail x="816" y="-102"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id3"/>
+			<label kind="guard" x="544" y="77">y&lt;tc2_max</label>
+			<nail x="536" y="68"/>
+			<nail x="604" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="guard" x="332" y="-229">y&lt;tc1_max</label>
+			<nail x="332" y="-93"/>
+			<nail x="323" y="-195"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id0"/>
+			<label kind="guard" x="638" y="-246">y&gt;=tc3_min</label>
+			<label kind="synchronisation" x="646" y="-221">Rx3?</label>
+			<label kind="assignment" x="629" y="-195">y:=0</label>
+			<label kind="comments" x="621" y="-170">finish</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="714" y="-127">d3!</label>
+			<label kind="assignment" x="714" y="-110">y:=0</label>
+			<label kind="comments" x="765" y="-102">U3</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="guard" x="604" y="0">y&gt;=tc2_min</label>
+			<label kind="synchronisation" x="612" y="-34">Rx2?</label>
+			<label kind="comments" x="663" y="-42">Init3</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="468" y="-25">d2!</label>
+			<label kind="assignment" x="468" y="0">y:=0</label>
+			<label kind="comments" x="510" y="0">U2</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="374" y="-110">y&gt;=tc1_min</label>
+			<label kind="synchronisation" x="332" y="-93">Rx1?</label>
+			<label kind="comments" x="400" y="-85">Init2</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="459" y="-221">d1!</label>
+			<label kind="assignment" x="434" y="-246">y:=0</label>
+			<label kind="comments" x="476" y="-195">U1</label>
+		</transition>
+	</template>
+	<template>
+		<name>Net</name>
+		<declaration>clock z;</declaration>
+		<location id="id6" x="-1037" y="-595">
+			<name x="-1045" y="-629">Init</name>
+			<label kind="exponentialrate" x="-1020" y="-620">e</label>
+		</location>
+		<location id="id7" x="-1122" y="-595">
+			<name x="-1164" y="-569">DG_sending</name>
+			<label kind="exponentialrate" x="-1113" y="-620">e</label>
+		</location>
+		<location id="id8" x="-1249" y="-527">
+			<name x="-1275" y="-501">wait_DG</name>
+			<label kind="exponentialrate" x="-1232" y="-527">e</label>
+		</location>
+		<location id="id9" x="-1385" y="-442">
+			<name x="-1479" y="-459">ACK_DG</name>
+			<label kind="exponentialrate" x="-1368" y="-442">e</label>
+		</location>
+		<location id="id10" x="-1385" y="-272">
+			<name x="-1411" y="-255">Im_Init</name>
+			<label kind="exponentialrate" x="-1436" y="-289">e</label>
+		</location>
+		<location id="id11" x="-1241" y="-272">
+			<name x="-1275" y="-306">Im_Sending</name>
+			<label kind="exponentialrate" x="-1283" y="-272">e</label>
+		</location>
+		<location id="id12" x="-1071" y="-272">
+			<name x="-1088" y="-306">wait_Im</name>
+			<label kind="exponentialrate" x="-1054" y="-263">e</label>
+		</location>
+		<location id="id13" x="-943" y="-272">
+			<name x="-960" y="-306">ACK_Im</name>
+			<label kind="exponentialrate" x="-918" y="-263">e</label>
+		</location>
+		<location id="id14" x="-833" y="-272">
+			<name x="-867" y="-306">DT_Init</name>
+			<label kind="exponentialrate" x="-833" y="-255">e</label>
+		</location>
+		<location id="id15" x="-739" y="-272">
+			<name x="-714" y="-280">DT_Sending</name>
+			<label kind="exponentialrate" x="-739" y="-255">e</label>
+		</location>
+		<location id="id16" x="-739" y="-544">
+			<name x="-731" y="-535">wait_DT</name>
+			<label kind="exponentialrate" x="-773" y="-544">e</label>
+		</location>
+		<location id="id17" x="-892" y="-595">
+			<name x="-943" y="-569">ACK_DT</name>
+			<label kind="exponentialrate" x="-918" y="-586">e</label>
+		</location>
+		<location id="id18" x="-1317" y="-595">
+			<name x="-1326" y="-629">wait_DG1</name>
+			<label kind="exponentialrate" x="-1309" y="-586">e</label>
+		</location>
+		<location id="id19" x="-1071" y="-357">
+			<name x="-1079" y="-391">wait_Im1</name>
+			<label kind="exponentialrate" x="-1071" y="-340">e</label>
+		</location>
+		<location id="id20" x="-807" y="-518">
+			<name x="-892" y="-518">wait_DT1</name>
+			<label kind="exponentialrate" x="-824" y="-501">e</label>
+		</location>
+		<branchpoint id="id21" x="-739" y="-442">
+		</branchpoint>
+		<branchpoint id="id22" x="-1139" y="-272">
+		</branchpoint>
+		<branchpoint id="id23" x="-1198" y="-595">
+		</branchpoint>
+		<init ref="id6"/>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id20"/>
+			<label kind="probability" x="-790" y="-476">1</label>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id16"/>
+			<label kind="probability" x="-731" y="-510">4</label>
+		</transition>
+		<transition>
+			<source ref="id20"/>
+			<target ref="id17"/>
+			<label kind="guard" x="-850" y="-586">z&gt;rx3_max</label>
+			<label kind="assignment" x="-833" y="-569">z:=0</label>
+			<label kind="comments" x="-875" y="-544">R33</label>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-1037" y="-357">z&gt;rx2_max</label>
+			<label kind="assignment" x="-1020" y="-340">z:=0</label>
+			<label kind="comments" x="-977" y="-331">R22</label>
+		</transition>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id12"/>
+			<label kind="probability" x="-1147" y="-255">4</label>
+		</transition>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id19"/>
+			<label kind="probability" x="-1147" y="-297">1</label>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-1368" y="-578">z&gt;rx1_max</label>
+			<label kind="assignment" x="-1419" y="-544">z:=0</label>
+			<label kind="comments" x="-1377" y="-629">R11</label>
+			<nail x="-1385" y="-595"/>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id18"/>
+			<label kind="probability" x="-1249" y="-612">1</label>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id8"/>
+			<label kind="probability" x="-1224" y="-569">4</label>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id17"/>
+			<label kind="guard" x="-833" y="-646">z&lt;=rx3_max</label>
+			<nail x="-867" y="-646"/>
+			<nail x="-833" y="-629"/>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id16"/>
+			<label kind="guard" x="-671" y="-561">z&lt;rx3_max</label>
+			<nail x="-680" y="-544"/>
+			<nail x="-680" y="-569"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id15"/>
+			<label kind="guard" x="-671" y="-263">z&lt;tx3_max</label>
+			<nail x="-671" y="-229"/>
+			<nail x="-671" y="-289"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-969" y="-221">z&lt;rx2_max</label>
+			<nail x="-960" y="-229"/>
+			<nail x="-918" y="-229"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-1113" y="-221">z&lt;rx2_max</label>
+			<nail x="-1088" y="-229"/>
+			<nail x="-1054" y="-229"/>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-1275" y="-212">z&lt;tx2_max</label>
+			<nail x="-1266" y="-212"/>
+			<nail x="-1215" y="-212"/>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-1487" y="-399">z&lt;rx1_max</label>
+			<nail x="-1436" y="-425"/>
+			<nail x="-1411" y="-399"/>
+			<nail x="-1402" y="-399"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-1368" y="-535">z&lt;rx1_max</label>
+			<nail x="-1292" y="-552"/>
+			<nail x="-1300" y="-527"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id7"/>
+			<label kind="guard" x="-1164" y="-663">z&lt;tx1_max</label>
+			<nail x="-1105" y="-646"/>
+			<nail x="-1147" y="-646"/>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-1020" y="-578">z&gt;=rx3_min</label>
+			<label kind="synchronisation" x="-994" y="-620">Rx3!</label>
+			<label kind="assignment" x="-994" y="-595">z:=0</label>
+			<label kind="comments" x="-867" y="-680">end</label>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="-765" y="-620">End_3?</label>
+			<label kind="comments" x="-773" y="-578">R3</label>
+			<nail x="-739" y="-595"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id21"/>
+			<label kind="guard" x="-731" y="-399">z&gt;=tx3_min</label>
+			<label kind="synchronisation" x="-799" y="-391">Start_3!</label>
+			<label kind="comments" x="-731" y="-340">S3</label>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-799" y="-289">d3?</label>
+			<label kind="assignment" x="-782" y="-314">z:=0</label>
+			<label kind="comments" x="-807" y="-331">C3</label>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id14"/>
+			<label kind="guard" x="-901" y="-238">z&gt;=rx2_min</label>
+			<label kind="synchronisation" x="-901" y="-297">Rx2!</label>
+			<label kind="comments" x="-875" y="-263">A2</label>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-1028" y="-272">End_2?</label>
+			<label kind="assignment" x="-1020" y="-246">z:=0</label>
+			<label kind="comments" x="-1020" y="-297">R2</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id22"/>
+			<label kind="guard" x="-1224" y="-289">z&gt;=tx2_min</label>
+			<label kind="synchronisation" x="-1224" y="-263">Start_2!</label>
+			<label kind="comments" x="-1173" y="-331">S2</label>
+			<nail x="-1173" y="-272"/>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-1368" y="-297">d2?</label>
+			<label kind="assignment" x="-1343" y="-263">z:=0</label>
+			<label kind="comments" x="-1326" y="-306">C2</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id10"/>
+			<label kind="guard" x="-1377" y="-391">z&gt;=rx1_min</label>
+			<label kind="synchronisation" x="-1377" y="-357">Rx1!</label>
+			<label kind="comments" x="-1428" y="-357">A1</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="-1360" y="-510">End_1?</label>
+			<label kind="assignment" x="-1334" y="-476">z:=0</label>
+			<label kind="comments" x="-1300" y="-476">R1</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id23"/>
+			<label kind="guard" x="-1198" y="-586">z&gt;=tx1_min</label>
+			<label kind="synchronisation" x="-1190" y="-620">Start_1!</label>
+			<label kind="comments" x="-1190" y="-637">S1</label>
+			<nail x="-1130" y="-595"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-1088" y="-578">d1?</label>
+			<label kind="assignment" x="-1088" y="-595">z:=0</label>
+			<label kind="comments" x="-1054" y="-561">C1</label>
+		</transition>
+	</template>
+	<template>
+		<name>Device1</name>
+		<declaration>clock a;
+</declaration>
+		<location id="id24" x="-263" y="-195">
+			<name x="-273" y="-229">Start_D1</name>
+		</location>
+		<location id="id25" x="-382" y="-51">
+			<name x="-425" y="-34">Process_D1</name>
+			<label kind="invariant" x="-433" y="-17">a&lt;=tp1_max</label>
+		</location>
+		<location id="id26" x="-127" y="-51">
+			<name x="-127" y="-25">End_D1</name>
+			<label kind="exponentialrate" x="-137" y="-17">3</label>
+		</location>
+		<init ref="id24"/>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="-187" y="-153">End_1!</label>
+			<label kind="assignment" x="-187" y="-136">a:=0</label>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id26"/>
+			<label kind="guard" x="-297" y="-42">a&gt;=tp1_min</label>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id25"/>
+			<label kind="synchronisation" x="-331" y="-110">Start_1?</label>
+			<label kind="assignment" x="-364" y="-123">a:=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Device2</name>
+		<declaration>clock b;</declaration>
+		<location id="id27" x="-127" y="-51">
+			<name x="-127" y="-25">End_D2</name>
+			<label kind="exponentialrate" x="-137" y="-17">3</label>
+		</location>
+		<location id="id28" x="-263" y="-195">
+			<name x="-273" y="-229">Start_D2</name>
+		</location>
+		<location id="id29" x="-382" y="-51">
+			<name x="-425" y="-34">Process_D2</name>
+			<label kind="invariant" x="-433" y="-17">b&lt;=tp2_max</label>
+		</location>
+		<init ref="id28"/>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id28"/>
+			<label kind="synchronisation" x="-187" y="-153">End_2!</label>
+			<label kind="assignment" x="-187" y="-136">b:=0</label>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id27"/>
+			<label kind="guard" x="-297" y="-42">b&gt;=tp2_min</label>
+		</transition>
+		<transition>
+			<source ref="id28"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-331" y="-110">Start_2?</label>
+			<label kind="assignment" x="-364" y="-123">b:=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Device3</name>
+		<declaration>clock c;</declaration>
+		<location id="id30" x="-127" y="-51">
+			<name x="-127" y="-25">End_D3</name>
+			<label kind="exponentialrate" x="-137" y="-17">3</label>
+		</location>
+		<location id="id31" x="-263" y="-195">
+			<name x="-273" y="-229">Start_D3</name>
+		</location>
+		<location id="id32" x="-382" y="-51">
+			<name x="-425" y="-34">Process_D3</name>
+			<label kind="invariant" x="-433" y="-17">c&lt;=tp3_max</label>
+		</location>
+		<init ref="id31"/>
+		<transition>
+			<source ref="id30"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="-187" y="-153">End_3!</label>
+			<label kind="assignment" x="-187" y="-136">c:=0</label>
+		</transition>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id30"/>
+			<label kind="guard" x="-297" y="-42">c&gt;=tp1_min</label>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id32"/>
+			<label kind="synchronisation" x="-331" y="-110">Start_3?</label>
+			<label kind="assignment" x="-364" y="-123">c:=0</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+Control = Controller();
+Network = Net();
+Droplet_generation = Device1();
+Imaging = Device2();
+Detection = Device3();
+// List one or more processes to be composed into a system.
+system Control,Network,Droplet_generation,Imaging,Detection;
+    </system>
+	<queries>
+		<query>
+			<formula>simulate[&lt;=500]{Control.Detection}</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>simulate[&lt;=100]{Network.DG_sending, Control.Droplet_Generation, Network.wait_DG,Control.Imaging, Droplet_generation.Start_D1}</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (Network.DG_sending and z&gt;70)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>Pr[&lt;=300](&lt;&gt; Network.ACK_DG and z&lt;rx1_max)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>Pr[&lt;=300](&lt;&gt; Network.ACK_DG and z&gt;rx1_max)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>simulate[&lt;=200]{Network.ACK_DG, Control.Droplet_Generation, Droplet_generation.End_D1}</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>simulate[&lt;=100]{Network.DG_sending, Control.Droplet_Generation, Network.wait_DG,Control.Imaging, Droplet_generation.Start_D1}</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>Pr[&lt;=50](&lt;&gt; Network.ACK_DG)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>Pr[&lt;=100](&lt;&gt;Network.DG_sending) &gt;=Pr[&lt;=100](&lt;&gt;Control.Imaging)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>Pr[&lt;=100](&lt;&gt;Network.DG_sending) &gt;=Pr[&lt;=100](&lt;&gt;Control.Droplet_Generation)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>Pr[&lt;=100](&lt;&gt; Control.Imaging &amp;&amp; y&lt;tc1_min)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>Pr[&lt;=100](&lt;&gt; Network.DG_sending &amp;&amp; y&lt;tc1_min)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula></formula>
+			<comment>It's not possible for Network 3 to send Initiate to next device where previous device is still operational</comment>
+		</query>
+	</queries>
+</nta>
