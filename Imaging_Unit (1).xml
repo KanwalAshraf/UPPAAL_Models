@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+broadcast chan Start_2, Done_2;
+int x1=10;
+int x2=40;
+int x3=10000;
+int e=3;
+int[5,10] DoF;
+int[20,100] Res;
+int[2500,10000] FR;
+clock x,y;
+</declaration>
+	<template>
+		<name x="5" y="5">Imaging</name>
+		<declaration>// Place local declarations here.
+clock x;</declaration>
+		<location id="id0" x="391" y="-76">
+			<name x="381" y="-110">Start</name>
+		</location>
+		<location id="id1" x="255" y="-17">
+			<name x="272" y="-17">Test_Imaging</name>
+			<label kind="exponentialrate" x="245" y="17">e</label>
+		</location>
+		<location id="id2" x="323" y="127">
+			<name x="340" y="161">Observer</name>
+			<label kind="exponentialrate" x="313" y="161">e</label>
+		</location>
+		<location id="id3" x="459" y="68">
+			<name x="476" y="34">Final_imaging</name>
+			<label kind="exponentialrate" x="449" y="102">e</label>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id0"/>
+			<label kind="guard" x="416" y="-51">x&gt;=7000</label>
+			<label kind="synchronisation" x="425" y="-34">Done_2!</label>
+			<label kind="assignment" x="450" y="-8">x:=0</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id3"/>
+			<label kind="guard" x="527" y="93">x&lt;10000</label>
+			<nail x="501" y="119"/>
+			<nail x="544" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id2"/>
+			<label kind="guard" x="255" y="195">x&lt;400</label>
+			<nail x="332" y="195"/>
+			<nail x="272" y="161"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="357" y="76">x&gt;=100</label>
+			<label kind="assignment" x="357" y="110">DoF=x1,Res=x2, 
+FR=x3, x:=0</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="289" y="34">x&gt;=200</label>
+			<label kind="assignment" x="246" y="42">x:=0</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="guard" x="119" y="0">x&lt;500</label>
+			<nail x="187" y="42"/>
+			<nail x="170" y="-42"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="323" y="-51">Start_2?</label>
+			<label kind="assignment" x="178" y="-85">x:=0, DoF=8, 
+Res=50, FR=5000</label>
+		</transition>
+	</template>
+	<template>
+		<name>emulator</name>
+		<declaration>clock y;</declaration>
+		<location id="id4" x="-357" y="-246">
+			<name x="-367" y="-280">Start</name>
+			<label kind="exponentialrate" x="-367" y="-212">e</label>
+		</location>
+		<location id="id5" x="-467" y="-68">
+			<name x="-477" y="-102">sending</name>
+			<label kind="exponentialrate" x="-477" y="-34">e</label>
+		</location>
+		<location id="id6" x="-221" y="-68">
+			<name x="-231" y="-102">Sleep</name>
+			<label kind="exponentialrate" x="-231" y="-34">e</label>
+		</location>
+		<init ref="id4"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-527" y="-76">y&lt;5</label>
+			<nail x="-544" y="-25"/>
+			<nail x="-553" y="-118"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-195" y="-8">y&lt;=70300</label>
+			<nail x="-221" y="8"/>
+			<nail x="-161" y="-59"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-272" y="-187">Done_2?</label>
+			<label kind="assignment" x="-272" y="-161">y:=0</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-365" y="-93">y&gt;=1</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="-449" y="-157">Start_2!</label>
+			<label kind="assignment" x="-449" y="-140">y:=0</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+P1 = Imaging();
+P2 = emulator();
+// List one or more processes to be composed into a system.
+system P1, P2;
+    </system>
+	<queries>
+		<query>
+			<formula>Pr[&lt;=100](&lt;&gt; P1.Test_Imaging and x&lt;50)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>Pr[&lt;=100](&lt;&gt;P1.Test_Imaging) &gt;=Pr[&lt;=100](&lt;&gt;P2.sending)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>Pr[&lt;=1000](&lt;&gt; P1.Test_Imaging)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>simulate[&lt;=500;6]{P1.Test_Imaging}</formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>
